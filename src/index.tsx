@@ -38,8 +38,6 @@ export const app = new Frog({
     },
 });
 
-app.use("/*", serveStatic({ root: "./public" }));
-
 app.use(
     Neynar({
         apiKey: "NEYNAR_FROG_FM",
