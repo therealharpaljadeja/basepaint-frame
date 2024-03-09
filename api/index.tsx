@@ -98,10 +98,7 @@ app.frame("/confirm", async (c) => {
         deriveState,
     } = c;
 
-    if (
-        buttonValue === "_t" &&
-        (transactionId === undefined || transactionId === "null")
-    ) {
+    if (buttonValue === "_t" && transactionId == "0x") {
         return c.res({
             image: (
                 <div
@@ -222,8 +219,6 @@ app.frame("/confirm", async (c) => {
             intents: getIntents(state),
         });
     }
-
-    console.log("inputText", inputText);
 
     const quantity = inputText === "" ? 1 : Number(inputText);
 
