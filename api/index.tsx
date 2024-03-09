@@ -130,7 +130,7 @@ app.frame("/confirm", async (c) => {
         });
     }
 
-    if (transactionId !== "null" || previousState.txHash) {
+    if (transactionId || previousState.txHash) {
         let indexed = false;
 
         const state = deriveState((previousState) => {
