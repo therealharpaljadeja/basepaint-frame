@@ -223,6 +223,8 @@ app.frame("/confirm", async (c) => {
         });
     }
 
+    console.log("inputText", inputText);
+
     const quantity = inputText === "" ? 1 : Number(inputText);
 
     if (!quantity)
