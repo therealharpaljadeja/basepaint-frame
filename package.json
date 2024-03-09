@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "frog dev",
     "host": "frog dev --proxy cloudflared",
-    "build": "frog vercel-build"
+    "build": "frog vercel-build",
+    "deploy": "vercel"
   },
   "dependencies": {
     "@hono/node-server": "latest",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.25",
-    "typescript": "latest"
+    "typescript": "latest",
+    "vercel": "^33.5.5"
   }
 }

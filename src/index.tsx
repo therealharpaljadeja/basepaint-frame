@@ -9,6 +9,7 @@ import {
     NeynarUser,
     type NeynarVariables,
 } from "frog/middlewares";
+import { handle } from "frog/vercel";
 
 const BASEPAINT_STARTED_AT = 1691599315;
 const OPEN_EDITION_PRICE = 0.0026;
@@ -22,6 +23,8 @@ export const app = new Frog({
     // Supply a Hub to enable frame verification.
     hub: neynar({ apiKey: "NEYNAR_FROG_FM" }),
     secret: process.env.FROG_SECRET,
+    basePath: "/api",
+    browserLocation: "/:path",
     imageAspectRatio: "1:1",
     initialState: {
         count: 0,
@@ -339,3 +342,6 @@ app.frame("/confirm", async (c) => {
         ],
     });
 });
+
+export const GET = handle(app);
+export const POST = handle(app);
