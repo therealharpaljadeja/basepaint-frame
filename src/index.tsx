@@ -1,4 +1,3 @@
-import { serveStatic } from "@hono/node-server/serve-static";
 import { Button, Frog, TextInput } from "frog";
 import { Hex, createPublicClient, http, parseEther } from "viem";
 import { base } from "viem/chains";
@@ -14,6 +13,10 @@ import { handle } from "frog/vercel";
 const BASEPAINT_STARTED_AT = 1691599315;
 const OPEN_EDITION_PRICE = 0.0026;
 
+export const config = {
+    runtime: "edge",
+};
+
 const client = createPublicClient({
     chain: base,
     transport: http(),
@@ -24,7 +27,8 @@ export const app = new Frog({
     hub: neynar({ apiKey: "NEYNAR_FROG_FM" }),
     secret: process.env.FROG_SECRET,
     basePath: "/api",
-    browserLocation: "/:path",
+    browserLocation:
+        "https://basepaint.xyz/mint?referrer=0x8Cf24E66d1DC40345B1bf97219856C8140Ce6c69",
     imageAspectRatio: "1:1",
     initialState: {
         count: 0,
