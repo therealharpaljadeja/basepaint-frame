@@ -130,6 +130,8 @@ app.frame("/confirm", async (c) => {
         });
     }
 
+    console.log(transactionId, previousState.txHash);
+
     if (transactionId || previousState.txHash) {
         let indexed = false;
 
