@@ -12,6 +12,7 @@ import { handle } from "frog/vercel";
 
 const BASEPAINT_STARTED_AT = 1691599315;
 const OPEN_EDITION_PRICE = 0.0026;
+const REFERRER_ADDRESS = "0x8Cf24E66d1DC40345B1bf97219856C8140Ce6c69";
 
 export const config = {
     runtime: "edge",
@@ -81,7 +82,7 @@ app.transaction("/mint", (c) => {
         args: [
             (interactor as NeynarUser).verifiedAddresses.ethAddresses[0] as Hex,
             BigInt(previousState.count),
-            "0x8Cf24E66d1DC40345B1bf97219856C8140Ce6c69",
+            REFERRER_ADDRESS,
         ],
     });
 
@@ -97,38 +98,49 @@ app.frame("/confirm", async (c) => {
         deriveState,
     } = c;
 
-    if (buttonValue === "_t") {
-        if (transactionId === undefined || transactionId === "null")
-            return c.res({
-                image: (
-                    <div
-                        style={{
-                            alignItems: "center",
-                            background:
-                                "linear-gradient(to right, #432889, #17101F)",
-                            backgroundSize: "100% 100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            flexWrap: "nowrap",
-                            height: "100%",
-                            justifyContent: "center",
-                            textAlign: "center",
-                            width: "100%",
-                        }}
-                    >
-                        <img
-                            src="https://i.ibb.co/MPGGGL2/Add-a-heading-2.png"
-                            height="650px"
-                            width="650px"
-                        />
-                    </div>
-                ),
-                intents: [<Button.Reset>Reset 🔁</Button.Reset>],
-            });
+    if (
+        buttonValue === "_t" &&
+        (transactionId === undefined || transactionId === "null")
+    ) {
+        return c.res({
+            image: (
+                <div
+                    style={{
+                        alignItems: "center",
+                        background:
+                            "linear-gradient(to right, #432889, #17101F)",
+                        backgroundSize: "100% 100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        height: "100%",
+                        justifyContent: "center",
+                        textAlign: "center",
+                        width: "100%",
+                    }}
+                >
+                    <img
+                        src="https://i.ibb.co/MPGGGL2/Add-a-heading-2.png"
+                        height="650px"
+                        width="650px"
+                    />
+                </div>
+            ),
+            intents: [<Button.Reset>Reset 🔁</Button.Reset>],
+        });
+    }
 
+    if (transactionId || previousState.txHash) {
         let indexed = false;
 
-        if (previousState.txHash && !previousState.indexed) {
+        const state = deriveState((previousState) => {
+            if (transactionId) previousState.txHash = transactionId;
+            if (indexed) {
+                previousState.indexed = true;
+            }
+        });
+
+        if (!previousState.indexed) {
             const txData = await fetch(
                 `https://api.onceupon.gg/v1/transactions/${previousState.txHash}`
             );
@@ -136,13 +148,6 @@ app.frame("/confirm", async (c) => {
                 indexed = true;
             }
         }
-
-        const state = deriveState((previousState) => {
-            previousState.txHash = transactionId;
-            if (indexed) {
-                previousState.indexed = true;
-            }
-        });
 
         const getIntents = (state: any) => {
             if (!state.indexed) {
@@ -203,10 +208,7 @@ app.frame("/confirm", async (c) => {
                                 whiteSpace: "pre-wrap",
                             }}
                         >
-                            <div>
-                                Click "Refresh" below to check on your
-                                transaction.
-                            </div>
+                            Click "Refresh" below to check on your transaction.
                         </div>
                     </div>
                 );
@@ -218,6 +220,7 @@ app.frame("/confirm", async (c) => {
             intents: getIntents(state),
         });
     }
+
     const quantity = inputText === "" ? 1 : Number(inputText);
 
     if (!quantity)
@@ -250,7 +253,7 @@ app.frame("/confirm", async (c) => {
 
     const { interactor } = c.var as NeynarVariables;
 
-    if (!interactor?.custodyAddress)
+    if (interactor && !interactor.verifiedAddresses.ethAddresses.length)
         return c.res({
             image: (
                 <div
