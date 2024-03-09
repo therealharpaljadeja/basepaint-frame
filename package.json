@@ -1,0 +1,20 @@
+{
+  "name": "basepaint-referrer-frame",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "frog dev",
+    "host": "frog dev --proxy cloudflared",
+    "build": "frog vercel-build"
+  },
+  "dependencies": {
+    "@hono/node-server": "latest",
+    "frog": "latest",
+    "hono": "^4",
+    "viem": "^2.7.22"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.25",
+    "typescript": "latest"
+  }
+}
